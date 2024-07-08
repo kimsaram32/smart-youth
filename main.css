@@ -1,0 +1,297 @@
+@layer base {
+  @font-face {
+    font-family: 'GmarketSans';
+    src: url('/assets/gmarketsans-400.woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'GmarketSans';
+    src: url('/assets/gmarketsans-700.woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --primary: oklch(60% 0.13 45);
+    --primary-dimmed: oklch(from var(--primary) l calc(c - 0.06) h);
+    --primary-shadow: oklch(from var(--primary) calc(l - 0.2) c h / 0.4);
+
+    --border-width: 0.2rem;
+    --radius-md: 0.6rem;
+    --radius-lg: 0.8rem;
+
+    --text-base: clamp(1rem, 0.913rem + 0.435vw, 1.25rem);
+    --text-lg: clamp(1rem, 0.652rem + 1.739vw, 2rem);
+    --font-main: 'GmarketSans', system-ui;
+  }
+
+  body {
+    line-height: 1.5;
+    font-family: var(--font-main);
+    font-size: var(--text-base);
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+  }
+
+  button {
+      color: inherit;
+      font: inherit;
+  }
+
+  .sr-only {
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+  }
+}
+
+body {
+  --_bg: oklch(from var(--primary-dimmed) 99% calc(c - 0.04) h);
+  --_shadow: oklch(from var(--primary-dimmed) 96% calc(c - 0.04) h);
+  --_stripe: oklch(from var(--primary-dimmed) 97% calc(c - 0.04) h);
+  display: grid;
+  place-content: center;
+  background:
+    linear-gradient(150deg, transparent, var(--_shadow)),
+    repeating-linear-gradient(-45deg, var(--_stripe), var(--_stripe) 0.4rem, var(--_bg) 0.4rem, var(--_bg) 2.8rem);
+  min-block-size: 100vb;
+}
+
+article {
+  --slot-outside-border-color: oklch(from var(--primary-dimmed) 80% c h);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  padding-block: 1.2rem;
+  padding-inline: 1.6rem;
+  border: var(--border-width) solid var(--slot-outside-border-color);
+  border-radius: var(--radius-lg);
+  background-color: oklch(from var(--primary-dimmed) 99.5% c h);
+  box-shadow:
+    inset 0.1rem 0.1rem 1rem -0.2rem var(--primary-shadow),
+    0 1rem 2rem -0.2rem oklch(from var(--primary-shadow) l c h / 0.2);
+  font-size: var(--text-lg);
+}
+
+@keyframes glow {
+  from {
+    background-color: oklch(from var(--primary) 90% 0.3 h);
+  }
+}
+
+.output {
+  display: inline flow-root;
+  position: relative;
+  box-sizing: content-box;
+  padding-block: 0.4rem;
+  padding-inline: 1.2rem;
+  inline-size: calc-size(max-content);
+  border: var(--border-width) solid oklch(from var(--primary) 50% c h);
+  border-radius: var(--radius-md);
+  overflow: clip;
+  text-align: center;
+  background-color: oklch(from var(--primary) 98% calc(c + 0.04) h);
+  box-shadow: inset -0.2rem -0.2rem 1.6rem -0.6rem var(--primary-shadow);
+  transition: inline-size 0.4s cubic-bezier(0.41, 1.81, 0.64, 1);
+}
+
+.output span {
+  display: block;
+  min-inline-size: max-content;
+}
+
+.output:not(:has(.spin-list)) {
+  animation: glow 0.8s ease-out;
+}
+
+.output:has(.spin-list) {
+  inline-size: calc(var(--longest-chars) * 1ic);
+
+  span {
+    color: transparent;
+  }
+}
+
+@property --_bg {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: black;
+}
+
+.spin {
+  --lever-bar-width: 0.8rem;
+  --lever-bar-height: 4rem;
+  --lever-handle-size: 2rem;
+  --lever-transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  --_bg: oklch(from var(--primary) calc(l + 0.36) 0 0);
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block: 50%;
+  inline-size: 2rem;
+  block-size: calc(100% - var(--radius-lg));
+  border: var(--border-width) solid var(--slot-outside-border-color);
+  border-inline-start: 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background-color: var(--_bg);
+  box-shadow: inset -0.2rem -0.2rem 1.2rem -0.6rem oklch(from var(--_bg) calc(l - 0.2) c h);
+  translate: calc(100% + var(--border-width)) -50%;
+  transition: --_bg 0.2s;
+}
+
+.spin:hover {
+  --_bg: oklch(from var(--primary) calc(l + 0.3) 0 0);
+}
+
+.spin::before, .spin::after {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 50%;
+}
+
+.spin::before {
+  --_bg: oklch(from var(--primary-dimmed) calc(l + 0.1) c h);
+  inline-size: var(--lever-bar-width);
+  block-size: var(--lever-bar-height);
+  border-radius: calc(1px * Infinity);
+  background-color: oklch(from var(--primary-dimmed) calc(l + 0.1) c h);
+  box-shadow:
+    inset
+    calc(var(--lever-bar-width) / -3) calc(var(--lever-bar-height) / 3)
+    calc(var(--lever-bar-width) / 2)
+    oklch(from var(--_bg) calc(l - 0.2) c h);
+  translate: -50% -100%;
+  transform-origin: bottom center;
+  transition: transform var(--lever-transition);
+}
+
+.spin:is(:active, :disabled)::before {
+  transform: rotateX(180deg);
+}
+
+@property --_translate-y {
+  syntax: "<length>";
+  initial-value: 0;
+  inherits: false;
+}
+
+.spin::after {
+  --_bg: oklch(from var(--primary) calc(l + 0.1) calc(c + 0.06) h);
+  --_shadow-base:
+    inset -0.2rem -0.2rem calc(var(--lever-handle-size) / 2.5) oklch(from var(--_bg) calc(l - 0.1) c h);
+  --_shadow-glow-outside: 0 0 2rem 0.2rem var(--_bg);
+  --_shadow-glow-inside: 0 0 0.4rem 0.1rem var(--_bg);
+  --_translate-y: calc(var(--lever-bar-height) * -1);
+  inline-size: var(--lever-handle-size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: var(--_bg);
+  background: radial-gradient(
+    at 30% 10%,
+    oklch(from var(--_bg) calc(l + 0.3) c h),
+    var(--_bg)
+  );
+  box-shadow: var(--_shadow-base);
+  translate: -50% calc(-50% + var(--_translate-y));
+  transition: --_translate-y var(--lever-transition), box-shadow 0.6s;
+}
+
+.spin:hover::after {
+  box-shadow: var(--_shadow-base), var(--_shadow-glow-inside);
+}
+
+.spin:is(:active, :disabled)::after {
+  --_translate-y: var(--lever-bar-height);
+  box-shadow: var(--_shadow-base), var(--_shadow-glow-inside), var(--_shadow-glow-outside);
+}
+
+footer {
+  margin-block-start: 2rem;
+  text-align: center;
+}
+
+@keyframes go {
+  from {
+    translate: 0 calc((var(--items) - 1) * -100%);
+  }
+
+  to {
+    translate: 0 100%;
+  }
+}
+
+.spin-list {
+  --spin-duration: 2s;
+  --spin-start-index: 0;
+  --start-item-delay: calc(
+    (var(--spin-duration) / var(--items))
+    * (var(--items) - var(--spin-start-index) - 1)
+  );
+  position: absolute;
+  inset: 0;
+  list-style: none;
+  background-color: inherit;
+  overflow: clip;
+}
+
+.spin-list li {
+  --spin-item-delay: calc(
+    ((var(--spin-duration) / var(--items)) * var(--i) + var(--start-item-delay))
+     * -1
+  );
+  position: absolute;
+  min-inline-size: max-content;
+  inset: 0;
+  text-align: center;
+  translate: 0 -100%;
+  animation: go var(--spin-duration) var(--spin-item-delay) linear 2 both;
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+footer button {
+  padding-block: 0.6rem;
+  padding-inline: 1.2rem;
+  min-inline-size: 8ch;
+  border-radius: var(--radius-lg);
+  border: var(--border-width) solid oklch(from var(--primary) calc(l - 0.1) c h);
+  background-color: oklch(from var(--primary) 95% c h);
+}
+
+footer button:hover {
+  background-color: oklch(from var(--primary) 90% calc(c + 0.02) h);
+}
+
+footer button:active {
+  background-color: oklch(from var(--primary) 80% calc(c + 0.02) h);
+}
+
+footer a {
+  margin-inline-start: auto;
+}
